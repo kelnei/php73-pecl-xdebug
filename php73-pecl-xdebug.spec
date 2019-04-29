@@ -140,7 +140,7 @@ install -D -p -m 755 NTS/debugclient/debugclient \
         %{buildroot}%{_bindir}/debugclient
 
 # install package registration file
-install -D -p -m 644 NTS/package.xml %{buildroot}%{pecl_xmldir}/%{name}.xml
+install -D -p -m 644 NTS/package.xml %{buildroot}%{pecl_xmldir}/%{pecl_name}.xml
 
 # install config file
 install -D -p -m 644 %{ini_name} %{buildroot}%{php_inidir}/%{ini_name}
@@ -203,7 +203,7 @@ REPORT_EXIT_STATUS=1 \
 %license NTS/LICENSE
 %doc %{pecl_docdir}/%{pecl_name}
 %{_bindir}/debugclient
-%{pecl_xmldir}/%{name}.xml
+%{pecl_xmldir}/%{pecl_name}.xml
 
 %config(noreplace) %{php_inidir}/%{ini_name}
 %{php_extdir}/%{pecl_name}.so
@@ -217,6 +217,7 @@ REPORT_EXIT_STATUS=1 \
 %changelog
 * Mon Apr 29 2019 Matt Linscott <matt.linscott@gmail.com> - 2.7.1-1
 - Port from Fedora to IUS
+- Install package.xml as %%{pecl_name}.xml, not %%{name}.xml
 
 * Fri Apr  5 2019 Remi Collet <remi@remirepo.net> - 2.7.1-1
 - update to 2.7.1
