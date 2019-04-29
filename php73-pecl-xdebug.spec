@@ -33,11 +33,16 @@ License:        PHP
 Group:          Development/Languages
 URL:            https://xdebug.org
 
-BuildRequires:  php-pear  > 1.9.1
 BuildRequires:  %{php}-devel
 BuildRequires:  %{php}-xml
 BuildRequires:  libedit-devel
 BuildRequires:  libtool
+
+BuildRequires:  pear1u
+# explicitly require pear dependencies to avoid conflicts
+BuildRequires:  %{php}-cli
+BuildRequires:  %{php}-common
+BuildRequires:  %{php}-process
 
 Requires:       php(zend-abi) = %{php_zend_api}
 Requires:       php(api) = %{php_core_api}
@@ -199,6 +204,24 @@ REPORT_EXIT_STATUS=1 \
 %endif
 
 
+%triggerin -- pear1u
+if [ -x %{__pecl} ]; then
+    %{pecl_install} %{pecl_xmldir}/%{pecl_name}.xml >/dev/null || :
+fi
+
+
+%posttrans
+if [ -x %{__pecl} ]; then
+    %{pecl_install} %{pecl_xmldir}/%{pecl_name}.xml >/dev/null || :
+fi
+
+
+%postun
+if [ $1 -eq 0 -a -x %{__pecl} ]; then
+    %{pecl_uninstall} %{pecl_name} >/dev/null || :
+fi
+
+
 %files
 %license NTS/LICENSE
 %doc %{pecl_docdir}/%{pecl_name}
@@ -218,6 +241,7 @@ REPORT_EXIT_STATUS=1 \
 * Mon Apr 29 2019 Matt Linscott <matt.linscott@gmail.com> - 2.7.1-1
 - Port from Fedora to IUS
 - Install package.xml as %%{pecl_name}.xml, not %%{name}.xml
+- Remove pear requirement and add scriptlets (adapted from remirepo)
 
 * Fri Apr  5 2019 Remi Collet <remi@remirepo.net> - 2.7.1-1
 - update to 2.7.1
